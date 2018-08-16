@@ -1,6 +1,8 @@
 # Proj files
 .idea/
-images/
+images/test
+images/train
+images/valid
 checkpoint.pth
 
 # Byte-compiled / optimized / DLL files
