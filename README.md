@@ -25,7 +25,7 @@ To see command-line options, exec: `python train.py --help`
 Example execution and result:
 ```
 $ python train.py images --gpu --epochs=1 --verbose
-Input args: Namespace(arch=<NetworkArchitectures.VGG16: 'vgg16'>, data_dir='flowers', dropout_rate=0.2, epochs=1, gpu=True, hidden_units=12544, learning_rate=0.0001, save_path
+Input args: Namespace(arch=<NetworkArchitectures.VGG16: 'vgg16'>, data_dir='images', dropout_rate=0.2, epochs=1, gpu=True, hidden_units=12544, learning_rate=0.0001, save_path
 ='checkpoint.pth', verbose=True)
 Training ...
 Epoch: 1/1..  Training Loss: 3.334..  Test Loss: 1.711..  Test Accuracy: 0.584
@@ -53,8 +53,8 @@ To see command-line options, exec: python predict.py --help
 
 Example execution and result:
 ```
-$ python predict.py flowers/valid/13/image_05749.jpg --verbose --gpu
-Input args: Namespace(category_names='cat_to_name.json', checkpoint_path='checkpoint.pth', gpu=True, image_path='flowers/valid/13/image_05749.jpg', top_k=5, verbose=True)
+$ python predict.py images/valid/13/image_05749.jpg --verbose --gpu
+Input args: Namespace(category_names='cat_to_name.json', checkpoint_path='checkpoint.pth', gpu=True, image_path='images/valid/13/image_05749.jpg', top_k=5, verbose=True)
 Loading network from checkpoint: checkpoint.pth.
 Network loaded.
 Class: king protea, Probability: 0.9999961256980896
