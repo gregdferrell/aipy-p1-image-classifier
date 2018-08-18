@@ -3,11 +3,14 @@
 
 from collections import OrderedDict
 from enum import Enum
+from typing import Dict, Tuple
+
 import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader
 from torchvision import models
-from typing import Dict, Tuple
+
+from util import process_image
 
 
 class NetworkArchitectures(Enum):
@@ -113,7 +116,7 @@ class Network:
 		:return: a tuple containing the [0]test loss and [1]accuracy
 		"""
 		# Setup Cuda
-		device = torch.device("cuda:0" if torch.cuda.is_available() and gpu else "cpu")
+		device = torch.device("cuda:0" if gpu and torch.cuda.is_available() else "cpu")
 		self.model.to(device)
 
 		# Set model to eval mode so it does not use dropout & other training features
@@ -150,7 +153,7 @@ class Network:
 		"""
 		print("Training ...")
 		# Setup Cuda
-		device = torch.device("cuda:0" if torch.cuda.is_available() and gpu else "cpu")
+		device = torch.device("cuda:0" if gpu and torch.cuda.is_available() else "cpu")
 		self.model.to(device)
 
 		# Set model to train mode so it uses dropout & other features
@@ -258,3 +261,37 @@ class Network:
 
 		print("Network loaded.")
 		return network
+
+	def predict(self, image_path, topk=5, gpu=False):
+		"""
+		Predict the class (or classes) of an image using a trained deep learning model.
+		:param image_path:
+		:param topk: the number of classes to return
+		:param gpu: flag to use a GPU when predicting
+		:return: tuple containing [0]the list of probabilities and [1]the list of classes
+		"""
+		# Setup Cuda
+		device = torch.device("cuda:0" if gpu and torch.cuda.is_available() else "cpu")
+		self.model.to(device)
+
+		# Make sure model is in eval mode
+		self.model.eval()
+
+		# Process image into numpy image, then convert to torch tensor
+		np_image = process_image(image_path)
+		torch_image = torch.from_numpy(np_image)
+		torch_image = torch_image.to(device)
+
+		with torch.no_grad():
+			output = self.model(torch_image.unsqueeze_(0))
+			probabilities = torch.exp(output)
+			kprobs, kindex = probabilities.topk(topk)
+
+		kprobs_list = kprobs[0].cpu().numpy().tolist()
+		kindex_list = kindex[0].cpu().numpy().tolist()
+
+		# For every kindex value, look up the class and return it instead of the index
+		idx_to_class = {v: k for k, v in self.class_to_idx.items()}
+		class_list = [idx_to_class[idx] for idx in kindex_list]
+
+		return kprobs_list, class_list

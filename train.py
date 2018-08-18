@@ -9,7 +9,7 @@
 import argparse
 
 from network import Network, NetworkArchitectures
-from util import get_data_sets_loaders, TEST, TRAIN, VALID
+from util import TEST, TRAIN, VALID, get_data_sets_loaders
 
 
 def get_input_args():
@@ -63,10 +63,6 @@ def main():
 
 	# Save the checkpoint for this network
 	nw.save_checkpoint(args.save_path)
-
-	# Test out loading a network from a checkpoint
-	# nw2 = Network.load_checkpoint(args.save_path)
-	# nw2.test_network(dataloaders[TEST], args.gpu)
 
 
 if __name__ == "__main__":
