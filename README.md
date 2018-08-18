@@ -14,7 +14,7 @@ An image classifier that identifies flower types in an image. I created this to 
 
 ## Running the App
 
-#### train.py
+### train.py
 `train.py` is a script to train a neural network on the given data directory. Use command-line options to customize the
 hyperparameters of the neural network.
 
