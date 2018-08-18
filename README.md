@@ -10,7 +10,7 @@ An image classifier that identifies flower types in an image. I created this to 
 - torchvision==0.2.1
 
 ### Setup
-- Download [this dataset](http://www.robots.ox.ac.uk/~vgg/data/flowers/102/index.html) and unpack into the images directory using the [torchvision datasets format](https://pytorch.org/docs/stable/torchvision/datasets.html#datasetfolder). See images folder README for more details.
+- Download [this dataset](http://www.robots.ox.ac.uk/~vgg/data/flowers/102/index.html) and unpack into the images directory using the [torchvision datasets format](https://pytorch.org/docs/stable/torchvision/datasets.html#datasetfolder). See [images folder README] (https://github.com/gregdferrell/aipy-p1-image-classifier/blob/master/images/README.md) for more details.
 
 ## Running the App
 
