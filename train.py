@@ -11,6 +11,9 @@
 
 import argparse
 
+from network import Network, NetworkArchitectures
+from util import get_data_sets_loaders, TEST, TRAIN, VALID
+
 
 def get_input_args():
 	"""
@@ -21,7 +24,8 @@ def get_input_args():
 	parser.add_argument("data_dir", help="the directory where the image data is stored", default="images")
 	parser.add_argument("-sd", "--save_dir", help="the directory to save the training checkpoint", default=".")
 	parser.add_argument("-a", "--arch", help="the neural network architecture to use",
-						choices=["vgg11", "vgg13", "vgg16", "vgg19"], default="vgg16")
+						choices=[NetworkArchitectures.VGG11, NetworkArchitectures.VGG13, NetworkArchitectures.VGG16,
+								 NetworkArchitectures.VGG19], default=NetworkArchitectures.VGG16)
 	parser.add_argument("-lr", "--learning_rate", help="the learning rate of the network when training", type=float,
 						default=.0001)
 	parser.add_argument("-dr", "--dropout_rate", help="the dropout rate of the network when training", type=float,
@@ -41,6 +45,22 @@ def get_input_args():
 
 def main():
 	args = get_input_args()
+
+	nw = Network(arch=args.arch,
+				 learning_rate=args.learning_rate,
+				 dropout_rate=args.dropout_rate,
+				 hidden_units=(args.hidden_units,))
+
+	image_datasets, dataloaders = get_data_sets_loaders(args.data_dir)
+
+	print(type(image_datasets))
+	print(type(dataloaders))
+
+	nw.train_network(epochs=args.epochs,
+					 dataloader_train=dataloaders[TRAIN],
+					 dataloader_valid=dataloaders[VALID],
+					 class_to_idx=image_datasets[TRAIN].class_to_idx,
+					 gpu=args.gpu)
 
 
 if __name__ == "__main__":
