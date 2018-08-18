@@ -24,7 +24,7 @@ To see command-line options, exec: `python train.py --help`
 
 Example execution and result:
 ```
-$ python train.py flowers --gpu --epochs=1
+$ python train.py images --gpu --epochs=1
 
 Training ...
 Epoch: 1/1..  Training Loss: 3.334..  Test Loss: 1.711..  Test Accuracy: 0.584
