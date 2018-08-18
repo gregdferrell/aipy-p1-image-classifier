@@ -20,7 +20,7 @@ hyperparameters of the neural network.
 
 Prints out training loss, validation loss, and validation accuracy as the network trains. Then saves a checkpoint.
 
-To see command-line options, exec: `python train.py --help`
+To see command-line options, exec: `python train.py --help`.
 
 Example execution and result:
 ```
@@ -49,7 +49,7 @@ Testing complete.
 
 Loads the network from the given checkpoint, then prints out the topk classes and probabilities for the given image.
 
-To see command-line options, exec: python predict.py --help
+To see command-line options, exec: `python predict.py --help`.
 
 Example execution and result:
 ```
