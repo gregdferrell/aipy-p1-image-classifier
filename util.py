@@ -39,7 +39,7 @@ def get_data_sets_loaders(data_dir='flowers'):
 					  VALID: datasets.ImageFolder(valid_dir, transform=data_transforms[VALID]),
 					  TEST: datasets.ImageFolder(test_dir, transform=data_transforms[TEST])}
 
-	# Using the image datasets and the trainforms, define the dataloaders
+	# Using the image datasets and the transforms, define the dataloaders
 	dataloaders = {TRAIN: torch.utils.data.DataLoader(image_datasets[TRAIN], batch_size=64, shuffle=True),
 				   VALID: torch.utils.data.DataLoader(image_datasets[VALID], batch_size=32),
 				   TEST: torch.utils.data.DataLoader(image_datasets[TEST], batch_size=32)}

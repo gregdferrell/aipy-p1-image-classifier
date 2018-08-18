@@ -1,7 +1,11 @@
+# Neural network class and related enums used by training & prediction scripts.
+#
+
 from collections import OrderedDict
 from enum import Enum
 import torch
 from torch import nn, optim
+from torch.utils.data import DataLoader
 from torchvision import models
 from typing import Dict, Tuple
 
@@ -16,10 +20,40 @@ class NetworkArchitectures(Enum):
 	VGG19 = 'vgg19'
 
 
+class CPProps(Enum):
+	"""
+	Enum representing the dict keys for the network checkpoint properties.
+	"""
+	ARCH = 'arch'
+	CLASS_TO_IDX = 'class_to_idx'
+	CRITERION = 'criterion'
+	DROPOUT_RATE = 'dropout_rate'
+	EPOCHS = 'epochs'
+	HIDDEN_UNITS = 'hidden_units'
+	INPUT_SIZE = 'input_size'
+	LEARNING_RATE = 'learning_rate'
+	MODEL_STATE_DICT = 'model_state_dict'
+	OUTPUT_SIZE = 'output_size'
+
+
 class Network:
 	def __init__(self, arch: NetworkArchitectures = NetworkArchitectures.VGG16, learning_rate: float = 0.0001,
 				 dropout_rate: float = 0.2, input_size: int = 25088, hidden_units: Tuple = (12544,),
-				 output_size: int = 102, model_state_dict: Dict = None, epochs: int = 0, class_to_idx: Dict = None):
+				 output_size: int = 102, model_state_dict: Dict = None, epochs: int = 0, class_to_idx: Dict = None,
+				 criterion=nn.NLLLoss()):
+		"""
+		Constructor for a network.
+		:param arch: the network architecture
+		:param learning_rate: the learning rate used when training the network
+		:param dropout_rate: the dropout rate used when training the network
+		:param input_size: the input size of the classifier
+		:param hidden_units: the number of nodes in the classifier hidden layer
+		:param output_size: the output size of the classifier (should equal the number of categories)
+		:param model_state_dict: the state_dict of the model; used for saving & loading training progress
+		:param epochs: the number of epochs this network has been trained
+		:param class_to_idx: a dict of classes to indices (usually taken from a training image dataset)
+		"""
+		self.arch = arch
 		self.learning_rate = learning_rate
 		self.dropout_rate = dropout_rate
 		self.input_size = input_size
@@ -27,8 +61,9 @@ class Network:
 		self.output_size = output_size
 		self.epochs = epochs
 		self.class_to_idx = class_to_idx
+		self.criterion = criterion
 
-		# Build model using transfer learning based off of input arch
+		# Build the model using transfer learning, basing it off of the specified input architecture
 		if arch == NetworkArchitectures.VGG11:
 			self.model = models.vgg11(pretrained=True)
 		elif arch == NetworkArchitectures.VGG13:
@@ -45,7 +80,6 @@ class Network:
 			param.requires_grad = False
 		self.model.classifier = self.create_classifier()
 
-		self.criterion = nn.NLLLoss()
 		self.optimizer = optim.Adam(self.model.classifier.parameters(), lr=learning_rate)
 
 		if model_state_dict:
@@ -53,6 +87,10 @@ class Network:
 			self.model.load_state_dict(model_state_dict)
 
 	def create_classifier(self):
+		"""
+		Creates a network classifier given the current properties of the network.
+		:return: the network classifier
+		"""
 		layers = OrderedDict([
 			('fcstart', nn.Linear(self.input_size, self.hidden_units[0])),
 			('relustart', nn.ReLU()),
@@ -67,7 +105,13 @@ class Network:
 		classifier = nn.Sequential(layers)
 		return classifier
 
-	def validate_network(self, dataloader_valid, gpu=False):
+	def validate_network(self, dataloader_valid: DataLoader, gpu: bool = False):
+		"""
+		Validates the network by predicting a test/validation image set and reporting test loss & accuracy.
+		:param dataloader_valid: the dataloader to use for validation
+		:param gpu: boolean indicating to use gpu or not
+		:return: a tuple containing the [0]test loss and [1]accuracy
+		"""
 		# Setup Cuda
 		device = torch.device("cuda:0" if torch.cuda.is_available() and gpu else "cpu")
 		self.model.to(device)
@@ -94,7 +138,17 @@ class Network:
 
 		return test_loss, accuracy
 
-	def train_network(self, epochs: int, dataloader_valid, dataloader_train, class_to_idx, gpu=False):
+	def train_network(self, epochs: int, dataloader_valid: DataLoader, dataloader_train: DataLoader, class_to_idx: Dict,
+					  gpu=False):
+		"""
+		Trains the network with the given parameters.
+		:param epochs: the number of epochs to train
+		:param dataloader_valid: the dataloader to use for validation
+		:param dataloader_train: the dataloader to use for training
+		:param class_to_idx: a dict of classes to indices (usually taken from a training image dataset)
+		:param gpu: boolean indicating to use gpu or not
+		"""
+		print("Training ...")
 		# Setup Cuda
 		device = torch.device("cuda:0" if torch.cuda.is_available() and gpu else "cpu")
 		self.model.to(device)
@@ -140,3 +194,67 @@ class Network:
 
 		self.epochs = self.epochs + epochs
 		self.class_to_idx = class_to_idx
+		print("Training complete.")
+
+	def test_network(self, dataloader_test, gpu):
+		"""
+		Tests the network using the given testloader.
+		:param dataloader_test: the dataloader to use for testing
+		:param gpu: boolean indicating to use gpu or not
+		:return: nothing -prints out test loss & accuracy
+		"""
+		print("Testing network ...")
+		self.model.eval()
+		test_loss, accuracy = self.validate_network(dataloader_test, gpu)
+
+		print("Test Loss: {:.3f}.. ".format(test_loss / len(dataloader_test)),
+			  "Test Accuracy: {:.3f}".format(accuracy / len(dataloader_test)))
+		print("Testing complete.")
+
+	def save_checkpoint(self, checkpoint_filepath):
+		"""
+		Saves a checkpoint to the given filepath.
+		:param checkpoint_filepath: the path to the checkpoint file to save
+		"""
+		print("Saving checkpoint.")
+		checkpoint = {
+			CPProps.ARCH: self.arch,
+			CPProps.CLASS_TO_IDX: self.class_to_idx,
+			CPProps.DROPOUT_RATE: self.dropout_rate,
+			CPProps.EPOCHS: self.epochs,
+			CPProps.HIDDEN_UNITS: self.hidden_units,
+			CPProps.INPUT_SIZE: self.input_size,
+			CPProps.LEARNING_RATE: self.learning_rate,
+			CPProps.MODEL_STATE_DICT: self.model.state_dict(),
+			CPProps.OUTPUT_SIZE: self.output_size,
+			CPProps.CRITERION: self.criterion
+		}
+
+		torch.save(checkpoint, checkpoint_filepath)
+		print(f"Checkpoint saved to: {checkpoint_filepath}.")
+
+	@staticmethod
+	def load_checkpoint(checkpoint_filepath):
+		"""
+		Creates and returns a network from the given checkpoint filepath.
+		:param checkpoint_filepath: the path to the checkpoint file to load
+		:return: a new instance of a Network loaded from the given checkpoint
+		"""
+		print(f"Loading network from checkpoint: {checkpoint_filepath}.")
+		checkpoint = torch.load(checkpoint_filepath)
+
+		network = Network(
+			arch=checkpoint[CPProps.ARCH],
+			class_to_idx=checkpoint[CPProps.CLASS_TO_IDX],
+			dropout_rate=checkpoint[CPProps.DROPOUT_RATE],
+			epochs=checkpoint[CPProps.EPOCHS],
+			hidden_units=checkpoint[CPProps.HIDDEN_UNITS],
+			input_size=checkpoint[CPProps.INPUT_SIZE],
+			learning_rate=checkpoint[CPProps.LEARNING_RATE],
+			model_state_dict=checkpoint[CPProps.MODEL_STATE_DICT],
+			output_size=checkpoint[CPProps.OUTPUT_SIZE],
+			criterion=checkpoint[CPProps.CRITERION]
+		)
+
+		print("Network loaded.")
+		return network

@@ -1,13 +1,10 @@
-# Script to train a neural network on the given data directory. Prints out training loss, validation loss, and
-# validation accuracy as the network trains.
+# Script to train a neural network on the given data directory. Use command-line options to customize the
+# hyperparameters of the neural network.
 #
-# Basic usage: python train.py data_dir
+# Prints out training loss, validation loss, and validation accuracy as the network trains. Then saves a checkpoint.
 #
-# Options:
-# - Set directory to save checkpoints: python train.py data_dir --save_dir save_directory
-# - Choose architecture: python train.py data_dir --arch "vgg13"
-# - Set hyperparameters: python train.py data_dir --learning_rate 0.01 --hidden_units 512 --epochs 20
-# - Use GPU for training: python train.py data_dir --gpu
+# To see command-line options, exec: python train.py --help
+#
 
 import argparse
 
@@ -22,7 +19,8 @@ def get_input_args():
 	"""
 	parser = argparse.ArgumentParser()
 	parser.add_argument("data_dir", help="the directory where the image data is stored", default="images")
-	parser.add_argument("-sd", "--save_dir", help="the directory to save the training checkpoint", default=".")
+	parser.add_argument("-sd", "--save_path", help="the file path to save the training checkpoint",
+						default="checkpoint.pth")
 	parser.add_argument("-a", "--arch", help="the neural network architecture to use",
 						choices=[NetworkArchitectures.VGG11, NetworkArchitectures.VGG13, NetworkArchitectures.VGG16,
 								 NetworkArchitectures.VGG19], default=NetworkArchitectures.VGG16)
@@ -53,14 +51,22 @@ def main():
 
 	image_datasets, dataloaders = get_data_sets_loaders(args.data_dir)
 
-	print(type(image_datasets))
-	print(type(dataloaders))
-
+	# Train network
 	nw.train_network(epochs=args.epochs,
 					 dataloader_train=dataloaders[TRAIN],
 					 dataloader_valid=dataloaders[VALID],
 					 class_to_idx=image_datasets[TRAIN].class_to_idx,
 					 gpu=args.gpu)
+
+	# Test network
+	nw.test_network(dataloaders[TEST], args.gpu)
+
+	# Save the checkpoint for this network
+	nw.save_checkpoint(args.save_path)
+
+	# Test out loading a network from a checkpoint
+	# nw2 = Network.load_checkpoint(args.save_path)
+	# nw2.test_network(dataloaders[TEST], args.gpu)
 
 
 if __name__ == "__main__":
