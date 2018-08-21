@@ -37,7 +37,7 @@ def main():
 	args = get_input_args()
 
 	# Open the given category names JSON file
-	with open('cat_to_name.json', 'r') as f:
+	with open(args.category_names, 'r') as f:
 		cat_to_name = json.load(f)
 
 	# Loading the network from the given checkpoint

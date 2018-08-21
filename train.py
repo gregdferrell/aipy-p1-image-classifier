@@ -22,8 +22,7 @@ def get_input_args():
 	parser.add_argument("-sd", "--save_path", help="the file path to save the training checkpoint",
 						default="checkpoint.pth")
 	parser.add_argument("-a", "--arch", help="the neural network architecture to use",
-						choices=[NetworkArchitectures.VGG11, NetworkArchitectures.VGG13, NetworkArchitectures.VGG16,
-								 NetworkArchitectures.VGG19], default=NetworkArchitectures.VGG16)
+						choices=[e.value for e in NetworkArchitectures], default=NetworkArchitectures.VGG16.value)
 	parser.add_argument("-lr", "--learning_rate", help="the learning rate of the network when training", type=float,
 						default=.0001)
 	parser.add_argument("-dr", "--dropout_rate", help="the dropout rate of the network when training", type=float,
@@ -44,7 +43,7 @@ def get_input_args():
 def main():
 	args = get_input_args()
 
-	nw = Network(arch=args.arch,
+	nw = Network(arch=NetworkArchitectures(args.arch),
 				 learning_rate=args.learning_rate,
 				 dropout_rate=args.dropout_rate,
 				 hidden_units=(args.hidden_units,))

@@ -10,6 +10,17 @@ TEST = 'test'
 NORMAL_MEANS = (0.485, 0.456, 0.406)
 NORMAL_STD_DEVIATIONS = (0.229, 0.224, 0.225)
 
+TRANSFORM_TRAIN = transforms.Compose([transforms.RandomRotation(30),
+									  transforms.RandomResizedCrop(224),
+									  transforms.RandomHorizontalFlip(),
+									  transforms.ToTensor(),
+									  transforms.Normalize(NORMAL_MEANS, NORMAL_STD_DEVIATIONS)])
+
+TRANSFORM_TEST_VALIDATION = transforms.Compose([transforms.Resize(256),
+												transforms.CenterCrop(224),
+												transforms.ToTensor(),
+												transforms.Normalize(NORMAL_MEANS, NORMAL_STD_DEVIATIONS)])
+
 
 def get_data_sets_loaders(data_dir: str = 'images'):
 	"""
@@ -27,19 +38,9 @@ def get_data_sets_loaders(data_dir: str = 'images'):
 	#  - Train Only: Apply random scaling, cropping & flipping
 
 	# Define your transforms for the training, validation, and testing sets
-	data_transforms = {TRAIN: transforms.Compose([transforms.RandomRotation(30),
-												  transforms.RandomResizedCrop(224),
-												  transforms.RandomHorizontalFlip(),
-												  transforms.ToTensor(),
-												  transforms.Normalize(NORMAL_MEANS, NORMAL_STD_DEVIATIONS)]),
-					   VALID: transforms.Compose([transforms.Resize(256),
-												  transforms.CenterCrop(224),
-												  transforms.ToTensor(),
-												  transforms.Normalize(NORMAL_MEANS, NORMAL_STD_DEVIATIONS)]),
-					   TEST: transforms.Compose([transforms.Resize(256),
-												 transforms.CenterCrop(224),
-												 transforms.ToTensor(),
-												 transforms.Normalize(NORMAL_MEANS, NORMAL_STD_DEVIATIONS)])}
+	data_transforms = {TRAIN: TRANSFORM_TRAIN,
+					   VALID: TRANSFORM_TEST_VALIDATION,
+					   TEST: TRANSFORM_TEST_VALIDATION}
 
 	# Load the datasets with ImageFolder
 	image_datasets = {TRAIN: datasets.ImageFolder(train_dir, transform=data_transforms[TRAIN]),
@@ -60,12 +61,7 @@ def process_image(image_path):
 	:param image_path: the path to the image file
 	:return: the image represented by a flattened numpy array
 	"""
-	im_transforms = transforms.Compose([
-		transforms.Resize(256),
-		transforms.CenterCrop(224),
-		transforms.ToTensor(),
-		transforms.Normalize(NORMAL_MEANS, NORMAL_STD_DEVIATIONS)
-	])
+	im_transforms = TRANSFORM_TEST_VALIDATION
 
 	# Open image
 	im = Image.open(image_path)
