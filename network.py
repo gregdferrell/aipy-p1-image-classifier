@@ -237,14 +237,16 @@ class Network:
 		print(f"Checkpoint saved to: {checkpoint_filepath}.")
 
 	@staticmethod
-	def load_checkpoint(checkpoint_filepath):
+	def load_checkpoint(checkpoint_filepath, gpu=False):
 		"""
 		Creates and returns a network from the given checkpoint filepath.
 		:param checkpoint_filepath: the path to the checkpoint file to load
+		:param gpu: flag to use a GPU when loading checkpoint
 		:return: a new instance of a Network loaded from the given checkpoint
 		"""
 		print(f"Loading network from checkpoint: {checkpoint_filepath}.")
-		checkpoint = torch.load(checkpoint_filepath)
+		device_map_location = "cuda:0" if gpu and torch.cuda.is_available() else "cpu"
+		checkpoint = torch.load(checkpoint_filepath, map_location=device_map_location)
 
 		network = Network(
 			arch=checkpoint[CPProps.ARCH],
