@@ -1,0 +1,31 @@
+root@90a8cb66264d:/home/workspace/aipnd-project# python train.py flowers --gpu --epochs=7 --verbose
+Input args: Namespace(arch='vgg16', data_dir='flowers', dropout_rate=0.2, epochs=7, gpu=True, hidden_units=12544, learning_rate=0.0001, save_path='checkpoint.pth', verbose=True)
+Training ...
+Epoch: 1/7..  Training Loss: 3.231..  Test Loss: 1.707..  Test Accuracy: 0.571
+Epoch: 1/7..  Training Loss: 1.733..  Test Loss: 0.944..  Test Accuracy: 0.754
+Epoch: 1/7..  Training Loss: 1.295..  Test Loss: 0.676..  Test Accuracy: 0.824
+Epoch: 2/7..  Training Loss: 0.735..  Test Loss: 0.494..  Test Accuracy: 0.871
+Epoch: 2/7..  Training Loss: 0.867..  Test Loss: 0.440..  Test Accuracy: 0.888
+Epoch: 2/7..  Training Loss: 0.779..  Test Loss: 0.466..  Test Accuracy: 0.871
+Epoch: 3/7..  Training Loss: 0.405..  Test Loss: 0.446..  Test Accuracy: 0.882
+Epoch: 3/7..  Training Loss: 0.679..  Test Loss: 0.416..  Test Accuracy: 0.885
+Epoch: 3/7..  Training Loss: 0.699..  Test Loss: 0.426..  Test Accuracy: 0.891
+Epoch: 4/7..  Training Loss: 0.174..  Test Loss: 0.415..  Test Accuracy: 0.888
+Epoch: 4/7..  Training Loss: 0.623..  Test Loss: 0.393..  Test Accuracy: 0.893
+Epoch: 4/7..  Training Loss: 0.577..  Test Loss: 0.399..  Test Accuracy: 0.890
+Epoch: 5/7..  Training Loss: 0.052..  Test Loss: 0.449..  Test Accuracy: 0.879
+Epoch: 5/7..  Training Loss: 0.564..  Test Loss: 0.335..  Test Accuracy: 0.912
+Epoch: 5/7..  Training Loss: 0.554..  Test Loss: 0.368..  Test Accuracy: 0.897
+Epoch: 5/7..  Training Loss: 0.540..  Test Loss: 0.376..  Test Accuracy: 0.907
+Epoch: 6/7..  Training Loss: 0.457..  Test Loss: 0.351..  Test Accuracy: 0.912
+Epoch: 6/7..  Training Loss: 0.510..  Test Loss: 0.377..  Test Accuracy: 0.906
+Epoch: 6/7..  Training Loss: 0.513..  Test Loss: 0.352..  Test Accuracy: 0.906
+Epoch: 7/7..  Training Loss: 0.318..  Test Loss: 0.380..  Test Accuracy: 0.906
+Epoch: 7/7..  Training Loss: 0.450..  Test Loss: 0.339..  Test Accuracy: 0.918
+Epoch: 7/7..  Training Loss: 0.436..  Test Loss: 0.353..  Test Accuracy: 0.917
+Training complete.
+Testing network ...
+Test Loss: 0.360..  Test Accuracy: 0.902
+Testing complete.
+Saving checkpoint.
+Checkpoint saved to: checkpoint.pth.

@@ -1,0 +1,28 @@
+root@56441c05627a:/home/workspace/aipnd-project# python train.py flowers --gpu --epochs=6 --verbose --arch=vgg19
+Input args: Namespace(arch='vgg19', data_dir='flowers', dropout_rate=0.2, epochs=6, gpu=True, hidden_units=12544, learning_rate=0.0001, save_path='checkpoint.pth', verbose=True)
+Training ...
+Epoch: 1/6..  Training Loss: 3.364..  Test Loss: 1.878..  Test Accuracy: 0.571
+Epoch: 1/6..  Training Loss: 1.819..  Test Loss: 1.018..  Test Accuracy: 0.732
+Epoch: 1/6..  Training Loss: 1.334..  Test Loss: 0.911..  Test Accuracy: 0.741
+Epoch: 2/6..  Training Loss: 0.847..  Test Loss: 0.650..  Test Accuracy: 0.824
+Epoch: 2/6..  Training Loss: 1.046..  Test Loss: 0.659..  Test Accuracy: 0.827
+Epoch: 2/6..  Training Loss: 0.932..  Test Loss: 0.520..  Test Accuracy: 0.859
+Epoch: 3/6..  Training Loss: 0.477..  Test Loss: 0.586..  Test Accuracy: 0.854
+Epoch: 3/6..  Training Loss: 0.794..  Test Loss: 0.521..  Test Accuracy: 0.863
+Epoch: 3/6..  Training Loss: 0.757..  Test Loss: 0.418..  Test Accuracy: 0.891
+Epoch: 4/6..  Training Loss: 0.211..  Test Loss: 0.411..  Test Accuracy: 0.885
+Epoch: 4/6..  Training Loss: 0.631..  Test Loss: 0.424..  Test Accuracy: 0.881
+Epoch: 4/6..  Training Loss: 0.677..  Test Loss: 0.417..  Test Accuracy: 0.886
+Epoch: 5/6..  Training Loss: 0.077..  Test Loss: 0.412..  Test Accuracy: 0.879
+Epoch: 5/6..  Training Loss: 0.573..  Test Loss: 0.408..  Test Accuracy: 0.883
+Epoch: 5/6..  Training Loss: 0.617..  Test Loss: 0.428..  Test Accuracy: 0.876
+Epoch: 5/6..  Training Loss: 0.565..  Test Loss: 0.386..  Test Accuracy: 0.901
+Epoch: 6/6..  Training Loss: 0.553..  Test Loss: 0.428..  Test Accuracy: 0.877
+Epoch: 6/6..  Training Loss: 0.530..  Test Loss: 0.405..  Test Accuracy: 0.881
+Epoch: 6/6..  Training Loss: 0.503..  Test Loss: 0.379..  Test Accuracy: 0.885
+Training complete.
+Testing network ...
+Test Loss: 0.469..  Test Accuracy: 0.862
+Testing complete.
+Saving checkpoint.
+Checkpoint saved to: checkpoint.pth.
