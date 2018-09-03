@@ -5,7 +5,7 @@ An image classifier that identifies flower types in an image. I created this to 
 ## Getting Started With Development
 
 ### Dependencies
-- Python 3.6.6
+- Python 3.5.2
 - pytorch==0.4.0
 - torchvision==0.2.1
 

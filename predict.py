@@ -28,7 +28,7 @@ def get_input_args():
 	args = parser.parse_args()
 
 	if args.verbose:
-		print(f"Input args: {args}")
+		print("Input args: {}".format(args))
 
 	return args
 
@@ -46,7 +46,9 @@ def main():
 	# Use network to get topk predictions
 	probabilities, classes = nw.predict(args.image_path, args.top_k, args.gpu)
 	for image_class, probability in zip(classes, probabilities):
-		print(f"Class: {cat_to_name[image_class]}, Probability: {probability}")
+		print("Class: {}, Probability: {}".format(cat_to_name[image_class], probability))
+
+	print(nw.class_to_idx)
 
 
 if __name__ == "__main__":

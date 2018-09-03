@@ -76,7 +76,7 @@ class Network:
 		elif arch == NetworkArchitectures.VGG19:
 			self.model = models.vgg19(pretrained=True)
 		else:
-			raise ValueError(f'Invalid Network Architecture: {arch}')
+			raise ValueError('Invalid Network Architecture: {}'.format(arch))
 
 		# Freeze pre-trained parameters so we don't backpropagate through them
 		for param in self.model.parameters():
@@ -234,7 +234,7 @@ class Network:
 		}
 
 		torch.save(checkpoint, checkpoint_filepath)
-		print(f"Checkpoint saved to: {checkpoint_filepath}.")
+		print("Checkpoint saved to: {}.".format(checkpoint_filepath))
 
 	@staticmethod
 	def load_checkpoint(checkpoint_filepath, gpu=False):
@@ -244,7 +244,7 @@ class Network:
 		:param gpu: flag to use a GPU when loading checkpoint
 		:return: a new instance of a Network loaded from the given checkpoint
 		"""
-		print(f"Loading network from checkpoint: {checkpoint_filepath}.")
+		print("Loading network from checkpoint: {}.".format(checkpoint_filepath))
 		device_map_location = "cuda:0" if gpu and torch.cuda.is_available() else "cpu"
 		checkpoint = torch.load(checkpoint_filepath, map_location=device_map_location)
 
