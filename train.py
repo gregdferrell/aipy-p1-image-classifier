@@ -35,7 +35,7 @@ def get_input_args():
 	args = parser.parse_args()
 
 	if args.verbose:
-		print(f"Input args: {args}")
+		print('Input args: {}'.format(args))
 
 	return args
 
