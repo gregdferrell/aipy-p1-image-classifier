@@ -55,6 +55,7 @@ class Network:
 		:param model_state_dict: the state_dict of the model; used for saving & loading training progress
 		:param epochs: the number of epochs this network has been trained
 		:param class_to_idx: a dict of classes to indices (usually taken from a training image dataset)
+		:param criterion: function to calculate loss
 		"""
 		self.arch = arch
 		self.learning_rate = learning_rate
