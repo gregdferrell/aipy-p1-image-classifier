@@ -215,9 +215,36 @@ class Network:
 			  "Test Accuracy: {:.3f}".format(accuracy / len(dataloader_test)))
 		print("Testing complete.")
 
-	def save_checkpoint(self, checkpoint_filepath):
+	def save_checkpoint(self, checkpoint_filepath, state_dict_only: bool = False):
 		"""
 		Saves a checkpoint to the given filepath.
+		:param checkpoint_filepath: the path to the checkpoint file to save
+		:param state_dict_only: flag to save only the state dict instead of all network parameters
+		"""
+		print("Saving checkpoint.")
+
+		if state_dict_only:
+			torch.save(self.model.state_dict(), checkpoint_filepath)
+		else:
+			checkpoint = {
+				CPProps.ARCH: self.arch,
+				CPProps.CLASS_TO_IDX: self.class_to_idx,
+				CPProps.DROPOUT_RATE: self.dropout_rate,
+				CPProps.EPOCHS: self.epochs,
+				CPProps.HIDDEN_UNITS: self.hidden_units,
+				CPProps.INPUT_SIZE: self.input_size,
+				CPProps.LEARNING_RATE: self.learning_rate,
+				CPProps.MODEL_STATE_DICT: self.model.state_dict(),
+				CPProps.OUTPUT_SIZE: self.output_size,
+				CPProps.CRITERION: self.criterion
+			}
+			torch.save(checkpoint, checkpoint_filepath)
+
+		print("Checkpoint saved to: {}.".format(checkpoint_filepath))
+
+	def save_checkpoint_dict_only(self, checkpoint_filepath):
+		"""
+		Saves a checkpoint containing only the model.state_dict() to the given filepath.
 		:param checkpoint_filepath: the path to the checkpoint file to save
 		"""
 		print("Saving checkpoint.")
